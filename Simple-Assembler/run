@@ -2,4 +2,4 @@
 
 # Add command to run your program here
 
-python3 src/main.py
+python3 "main.py"
