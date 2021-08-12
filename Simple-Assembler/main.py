@@ -124,9 +124,9 @@ for i in inst_list: # loop to read instruction and convert it into binary
         reg["FLAGS"][1] = 0
     if inst[0] == "mov" and inst[2][0] == "$":
         reg[inst[1]][1] = int(inst[2][1:])
-        bi = op_cod[inst[0]][0] + reg[inst[1]][0] + to_bin(int(inst[2][1:],8))
+        bi = op_cod[inst[0]][0] + reg[inst[1]][0] + to_bin(int(inst[2][1:]),8)
         reg["FLAGS"][1] = 0
-    if inst[0] == "mov" and inst[2][0] == "R":
+    if inst[0] == "mov" and (inst[2][0] == "R" or inst[2] == "FLAGS"):
         reg[inst[1]][1] = reg[inst[2]][1]
         bi = op_cod[inst[0]][1]+"00000"+reg[inst[1]][0] + reg[inst[2]][0]
         reg["FLAGS"][1] = 0
