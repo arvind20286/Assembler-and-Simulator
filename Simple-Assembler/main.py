@@ -8,7 +8,9 @@ def to_bin(n,no_of_bits):  # function to covert decimal no. to binary no.
     binary = ""
     binary = binary.join(s)
     return binary
-
+def errors(inst){
+    
+}
 # op_cod = {"inst_name":"op_code"}
 op_cod = {"mov":["00010","00011"],
             "hlt":"10011",
