@@ -1,18 +1,22 @@
 ERRors:
 1) Typo
-if inst[0] not in op_code:
+if inst[0] not in op_code or inst[1] not in reg:
     print("typo_error in inst")
     break;
 
 2)undefined variables
 traverse through whole and convert each character 
-to ascii value and check for b/w 48 to 122
+to ascii value and check for b/w ((48 to 57) or (65 to 90) or (97 to 122) or 95)
 
 3)undefined lables
 traverse through whole and convert each character 
-to ascii value and check for b/w 48 to 122
+to ascii value and check for b/w ((48 to 57) or (65 to 90) or (97 to 122) or 95)
+
 
 4)Illegal use of FLAGS register
+For mov and load instruction
+if inst[1] == FLAGS:
+    print(Illegal use of FLAGS register)
 
 5)Illegal Immediate values 
 if inst[2][1:]>255 or <0:
@@ -20,6 +24,14 @@ if inst[2][1:]>255 or <0:
     break;
 
 6)Misuse of labels as variables or vice-versa
+when we encounter label 
+if label is in variables:
+    print(error)
+
+when we encounter variables 
+if variables is in labels:
+    print
+
 
 7)Missing hlt instruction
 if "hlt" not in inst_list:
@@ -30,4 +42,7 @@ if "hlt" not in inst_list:
 
 9)Wrong syntax used for instructions (For example, add instruction being used as a
 type B instruction )
+"add" "R1" "R2" "R3"
+"add" "R1" "$4"
+
     
