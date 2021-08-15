@@ -1,3 +1,4 @@
+import inp
 # op_cod = {"inst_name":"op_code"}
 op_cod = {"mov":["00010","00011"],
             "hlt":"10011",
@@ -42,7 +43,15 @@ variables = {}  #dic to store variables with their address
 
 # labels = {"label_name":"label_address"}
 labels = {}  #dic to store variables with their address
- 
+inp.write_input('input.txt')
+inst_list  = inp.read_input('input.txt') # stores the whole assembly code       
+output = []   # stores the output
+inst_counter = 0 
+var_counter = 0
+hlt_counter = 0
+error = 0
+bi = ""    # stores the binary form of the instruction
+
 def to_bin(n,no_of_bits):  # function to covert decimal no. to binary no.
     s = ["0"]*no_of_bits
     while(no_of_bits != 0):
@@ -82,10 +91,21 @@ def comparison(inst):
 def check_reg(inst,no_of_reg):
     for i in range(1,no_of_reg+1):
         if inst[i] not in reg:
-            print("ERROR: Incorrect register name")
+            print("ERROR: Incorrect register name in line ",inst_counter)
             return True
 
-def check_error(inst,inst_counter):
+def check_error(inst_counter):
+    if inst[0] == "var":
+        if inst_counter > var_counter:
+            print("ERROR: General syntax error in line ",inst_counter)
+            return True
+        else:
+            for i in inst[1]:
+                if (ord(i)>=48 and ord(i)<=57) or (ord(i)>=65 and ord(i)<=90) or (ord(i)>=97 and ord(i)<=122) or (ord(i) == 95):
+                    return False
+                else:
+                    print("ERROR: Incorrect variable name in line ",inst_counter)
+                    return True
     if inst[0] in labels: 
         for i in inst[0]:
             if (ord(i)>=48 and ord(i)<=58) or (ord(i)>=65 and ord(i)<=90) or (ord(i)>=97 and ord(i)<=122) or (ord(i) == 95):
@@ -93,92 +113,89 @@ def check_error(inst,inst_counter):
                     print("ERROR: used a variables name to name a label in line ",inst_counter)
                 continue
             else:
-                print("ERROR:Incorrect label name in line ",inst_counter)
+                print("ERROR: Incorrect label name in line ",inst_counter)
                 return True
+        # condition to remove labels from inst[]        
+        global label_name 
+        label_name = inst[0]
         inst.remove(inst[0])
-    if inst[0] == "var":
-        for i in inst[0]:
-            if (ord(i)>=48 and ord(i)<=57) or (ord(i)>=65 and ord(i)<=90) or (ord(i)>=97 and ord(i)<=122) or (ord(i) == 95):
-                return False
-            else:
-                print("ERROR:Incorrect label name in line ",inst_counter)
-                return True
-    elif inst[0] not in op_cod:
-        print("ERROR:No such instruction name in line ",inst_counter)
     
-    # for wrong syntax
-    else:
-        if inst[0] in typ["A"]: 
-            if len(inst) != 4:
-                print("ERROR: Wrong syntax used in line ",inst_counter)
-                return True
-            else:
-                if "FLAGS" in inst: # To check illegal use of registers
-                    print("ERROR: Illegal use of FLAGS in line ",inst_counter)
+    if len(inst) != 0:
+        if inst[0] not in op_cod:
+            print("ERROR: No such instruction name in line ",inst_counter)
+        
+        # for wrong syntax
+        else:
+            if inst[0] in typ["A"]: 
+                if len(inst) != 4:
+                    print("ERROR: Wrong syntax used in line ",inst_counter)
                     return True
-
-        elif (inst[0] in typ["B"]) or (inst[0] in typ["C"]) or (inst[0] in typ["D"]):
-            if len(inst) != 3:
-                print("ERROR: Wrong syntax used in line ",inst_counter) 
-                return True
-            else:
-                if inst[0] in typ["B"]:
-                    if inst[2][0] != "$":
-                        if inst[0] == "mov":
-                            return False
-                        else:
-                            print("ERROR: Wrong syntax used in line ",inst_counter)
-                            return True
-                    elif int(inst[2][1:])>255 or int(inst[2][1:])<0: # To check illegal use of immediate values
-                        print("ERROR: Illegal use of immediate value in line ",inst_counter)
+                else:
+                    if "FLAGS" in inst: # To check illegal use of registers
+                        print("ERROR: Illegal use of FLAGS in line ",inst_counter)
                         return True
-                
-                elif inst[0] in typ["C"] and (inst[1][0] != "R" or inst[2][0] != "R"):
-                    if "FLAGS" in inst:
-                        if "mov" in inst:
-                            return False
-                        else:
-                            print("ERROR: Illegal use of FLAGS in line ",inst_counter)
-                    else:
-                        print("ERROR: Wrong syntax used in line ",inst_counter)
+
+            elif (inst[0] in typ["B"]) or (inst[0] in typ["C"]) or (inst[0] in typ["D"]):
+                if len(inst) != 3:
+                    print("ERROR: Wrong syntax used in line ",inst_counter) 
                     return True
-                elif inst[0] in typ["D"]:
-                    if inst[1][0] !="R":
+                else:
+                    if inst[0] in typ["B"]:
+                        if inst[2][0] != "$":
+                            if inst[0] == "mov":
+                                return False
+                            else:
+                                print("ERROR: Wrong syntax used in line ",inst_counter)
+                                return True
+                        elif int(inst[2][1:])>255 or int(inst[2][1:])<0: # To check illegal use of immediate values
+                            print("ERROR: Illegal use of immediate value in line ",inst_counter)
+                            return True
+                    
+                    elif inst[0] in typ["C"] and (inst[1][0] != "R" or inst[2][0] != "R"):
                         if "FLAGS" in inst:
-                            print("ERROR: Illegal use of FLAGS in line ",inst_counter)    
+                            if "mov" in inst:
+                                return False
+                            else:
+                                print("ERROR: Illegal use of FLAGS in line ",inst_counter)
                         else:
                             print("ERROR: Wrong syntax used in line ",inst_counter)
                         return True
-                    else:
-                        if inst[2] in labels:
-                            print("ERROR: Used labels in place of variables in line ",inst_counter)
+                    elif inst[0] in typ["D"]:
+                        if inst[1][0] !="R":
+                            if "FLAGS" in inst:
+                                print("ERROR: Illegal use of FLAGS in line ",inst_counter)    
+                            else:
+                                print("ERROR: Wrong syntax used in line ",inst_counter)
                             return True
-                        elif inst[2] not in variables:
-                            print("ERROR: Variable is not defined in line ",inst_counter) # To check difined variables
-                            return True
-        elif inst[0] in typ["E"]:
-            if len(inst) != 2:
-                print("ERROR: Wrong syntax used in line ",inst_counter)
-                return True
-            elif len(inst) == 2:
-                if inst[1] in variables: # To check misuse of variables
-                    print("ERROR: Used variables in place of labels in line ",inst_counter)
+                        else:
+                            if inst[2] in labels:
+                                print("ERROR: Used labels in place of variables in line ",inst_counter)
+                                return True
+                            elif inst[2] not in variables:
+                                print("ERROR: Variable is not defined in line ",inst_counter) # To check difined variables
+                                return True
+            elif inst[0] in typ["E"]:
+                if len(inst) != 2:
+                    print("ERROR: Wrong syntax used in line ",inst_counter)
                     return True
-                elif (inst[1]+":") not in labels: # To check undefined labels
-                            print("ERROR: label is not defined in line ",inst_counter)
-                            return True
-               
-  
-output = []   # stores the output
-inst_list  = [] # stores the whole assembly code
-inst_counter = 0 
-var_counter = 0
-bi = ""    # stores the binary form of the instruction
+                elif len(inst) == 2:
+                    if inst[1] in variables: # To check misuse of variables
+                        print("ERROR: Used variables in place of labels in line ",inst_counter)
+                        return True
+                    elif (inst[1]+":") not in labels: # To check undefined labels
+                                print("ERROR: label is not defined in line ",inst_counter)
+                                return True
+    
+    if hlt_counter > 1:
+        print("ERROR: More than one hlt instruction used in line ",inst_counter)
+        return True
+    elif "hlt" in inst and inst_counter < len(inst_list):
+        print("ERROR: hlt instruction is not at last in line ",inst_counter)
+        return True
 
-while True:    # loop to take the input and store it in inst_list
-    s = input()
+    
+for s in inst_list:    
     inst_counter += 1
-
     # condition to count no. of variables and put the name of variable in variables dic
     if s[0:3] == "var":
         var_counter += 1
@@ -188,74 +205,78 @@ while True:    # loop to take the input and store it in inst_list
     if ":" in s:
         label_name = list(s.split(" "))[0]
         labels[label_name] = inst_counter - var_counter - 1
-    inst_list.append(s)
+    
+    if 'hlt' in s:
+        hlt_counter += 1
 
-    if "hlt" in s:
-        break
-
-for i in variables:  # loop to store the address of the variables
+j = var_counter
+# loop to store the address of the variables
+for i in variables:  
     variables[i] = inst_counter - var_counter 
-    var_counter -= 1
+    j -= 1
 
 inst_counter = 0 
-error = 0
-for i in inst_list: # loop to read instruction and convert it into binary
+if hlt_counter == 0:
+        print("ERROR: No hlt instruction in code")
+# loop to read instruction and convert it into binary
+for i in inst_list: 
     inst_counter += 1 
-    inst = list(i.split(" "))
-    if check_error(inst,inst_counter) == True:
+    
+    i= list(i.split(" "))
+    inst = []
+    for j in i:
+        if j != '':
+            inst.append(j)
+    if check_error(inst_counter) == True:
         error += 1
         continue
-    # condition to remove labels from inst[]
-    if inst[0] in labels: 
-        label_name = inst[0]
-        inst.remove(inst[0])
 
-    if inst[0] in typ["A"]:
-        if check_reg(inst, 3) == True:
-            break
-        overflow(inst)
-        bi = op_cod[inst[0]] +"00"+ reg[inst[1]][0] + reg[inst[2]][0] + reg[inst[3]][0]    
-    
-    if inst[0] in typ["B"]:
-        if inst[2][0] == "$":
+    if(len(inst) != 0 and inst[0] != "var"):
+        if inst[0] in typ["A"]:
+            if check_reg(inst, 3) == True:
+                break
+            overflow(inst)
+            bi = op_cod[inst[0]] +"00"+ reg[inst[1]][0] + reg[inst[2]][0] + reg[inst[3]][0]    
+        
+        if inst[0] in typ["B"]:
+            if inst[2][0] == "$":
+                if check_reg(inst, 1) == True:
+                    break
+                if inst[0] == "mov" :
+                    reg[inst[1]][1] = int(inst[2][1:])
+                    bi = op_cod[inst[0]][0] + reg[inst[1]][0] + to_bin(int(inst[2][1:]),8)
+                else:
+                    bi = op_cod[inst[0]] + reg[inst[1]][0] + to_bin(int(inst[2][1:]),8)
+                reg["FLAGS"][1] = 0
+        
+        if inst[0] in typ["C"]:
+            if inst[2][0] == "R" or inst[2] == "FLAGS":
+                if check_reg(inst, 2) == True:
+                    break
+                if inst[0] == "cmp":
+                    comparison(inst)
+                if inst[0] == "mov":
+                    reg[inst[1]][1] = reg[inst[2]][1]
+                    bi = op_cod[inst[0]][1] +"00000"+reg[inst[1]][0] + reg[inst[2]][0]
+                else:
+                    bi = op_cod[inst[0]] +"00000"+reg[inst[1]][0] + reg[inst[2]][0]
+
+        
+        if inst[0] in typ["D"]:
             if check_reg(inst, 1) == True:
                 break
-            if inst[0] == "mov" :
-                reg[inst[1]][1] = int(inst[2][1:])
-                bi = op_cod[inst[0]][0] + reg[inst[1]][0] + to_bin(int(inst[2][1:]),8)
-            else:
-                bi = op_cod[inst[0]] + reg[inst[1]][0] + to_bin(int(inst[2][1:]),8)
+            bi = op_cod[inst[0]]+reg[inst[1]][0] + to_bin(variables[inst[2]],8)
             reg["FLAGS"][1] = 0
-    
-    if inst[0] in typ["C"]:
-        if inst[2][0] == "R" or inst[2] == "FLAGS":
-            if check_reg(inst, 2) == True:
-                break
-            if inst[0] == "cmp":
-                comparison(inst)
-            if inst[0] == "mov":
-                reg[inst[1]][1] = reg[inst[2]][1]
-                bi = op_cod[inst[0]][1] +"00000"+reg[inst[1]][0] + reg[inst[2]][0]
-            else:
-                bi = op_cod[inst[0]] +"00000"+reg[inst[1]][0] + reg[inst[2]][0]
+        
+        if inst[0] in typ["E"]:
+            bi = op_cod[inst[0]]+"000" + to_bin(labels[label_name],8)
+            reg["FLAGS"][1] = 0
+        
+        if inst[0] in typ["F"]:
+            bi = op_cod[inst[0]]+"00000000000"
+            reg["FLAGS"][1] = 0
+        output.append(bi)
 
-    
-    if inst[0] in typ["D"]:
-        if check_reg(inst, 1) == True:
-            break
-        bi = op_cod[inst[0]]+reg[inst[1]][0] + to_bin(variables[inst[2]],8)
-        reg["FLAGS"][1] = 0
-    
-    if inst[0] in typ["E"]:
-        bi = op_cod[inst[0]]+"000" + to_bin(labels[label_name],8)
-        reg["FLAGS"][1] = 0
-    
-    if inst[0] in typ["F"]:
-        bi = op_cod[inst[0]]+"00000000000"
-        reg["FLAGS"][1] = 0
-
-    output.append(bi)
-    
 if error == 0:
     for i in output:
         print(i)
