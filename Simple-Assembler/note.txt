@@ -29,12 +29,12 @@ if variables is in labels:
     print
 
 
-7)Missing hlt instruction
+done 7)Missing hlt instruction
 if "hlt" not in inst_list:
     print(Missing hlt instruction)
     break;
 
-8)hlt not being used as the last instruction
+done 8)hlt not being used as the last instruction
 
 done 9)Wrong syntax used for instructions (For example, add instruction being used as a
 type B instruction )
