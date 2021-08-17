@@ -108,6 +108,8 @@ def EE(instruction):
         RF[7] = 0
     return PC+1       
 
+            
+    
 while(halted != True):
     instruction = MEM[PC]
     if instruction[0:5] == '10011':
