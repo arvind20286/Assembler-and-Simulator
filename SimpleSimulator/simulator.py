@@ -52,7 +52,7 @@ def EE(instruction):
         elif instruction[0:5] == '00001':
             RF[int(instruction[7:10],2)] = RF[int(instruction[10:13],2)] - RF[int(instruction[13:16],2)]
             overflow(instruction)
-         elif instruction[0:5] == '00110':
+        elif instruction[0:5] == '00110':
             RF[int(instruction[7:10],2)] = RF[int(instruction[10:13],2)] * RF[int(instruction[13:16],2)]
             overflow(instruction)
         elif instruction[0:5] == '01010':
@@ -62,7 +62,17 @@ def EE(instruction):
         elif instruction[0:5] == '01100':
             RF[int(instruction[7:10],2)] = RF[int(instruction[10:13],2)] & RF[int(instruction[13:16],2)]
             
-        
+    else:
+        if instruction[0:5] in typ["B"]:
+            if instruction[0:5] == '00010': 
+                RF[int(instruction[5:8],2)] =to_bin[int(instruction[8:16],2)]
+            overflow(instruction)
+        elif instruction[0:5] == '01000':
+            RF[int(instruction[5:8],2)] =to_bin[int(instruction[8:16],2)]
+            overflow(instruction)
+        elif instruction[0:5] == '01001': 
+                RF[int(instruction[5:8],2)] =to_bin[int(instruction[8:16],2)]
+                overflow(instruction)
 
 while(halted != True):
     instruction = MEM[PC]
