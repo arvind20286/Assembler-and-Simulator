@@ -1,4 +1,4 @@
-from SimpleSimulator.inp import read_input
+
 import inp
 typ = {"A":["00000","00001","00110","01010","01011","01100"],
         "B":["00010","01000","01001"],
