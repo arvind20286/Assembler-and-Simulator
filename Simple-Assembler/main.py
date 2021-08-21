@@ -75,7 +75,7 @@ def overflow(inst):
             reg[inst[1]][1] = 0
             reg["FLAGS"][1] = 8 
     if reg[inst[1]][1] > 65535:
-            result = to_bin(reg[inst[1]][1],16)
+            result = to_bin(reg[inst[1]][1],16) 
             reg[inst[1]][1] = int(result,2)
             reg["FLAGS"][1] = 8 
 
@@ -96,25 +96,27 @@ def check_reg(inst,no_of_reg):
 
 def check_error(inst_counter):
     if inst[0] == "var":
+        # condition to check if the variables are declared in the starting or not
         if inst_counter > var_counter:
             print("ERROR: General syntax error in line ",inst_counter)
             return True
         else:
             for i in inst[1]:
+                # condition to check if the variables syntax is correct or not
                 if (ord(i)>=48 and ord(i)<=57) or (ord(i)>=65 and ord(i)<=90) or (ord(i)>=97 and ord(i)<=122) or (ord(i) == 95):
-                    return False
+                    continue
                 else:
                     print("ERROR: Incorrect variable name in line ",inst_counter)
                     return True
     if inst[0] in labels: 
+        # to check the label syntax
         for i in inst[0]:
             if (ord(i)>=48 and ord(i)<=58) or (ord(i)>=65 and ord(i)<=90) or (ord(i)>=97 and ord(i)<=122) or (ord(i) == 95):
-                if inst[0] in variables:
-                    print("ERROR: used a variables name to name a label in line ",inst_counter)
                 continue
             else:
                 print("ERROR: Incorrect label name in line ",inst_counter)
                 return True
+
         # condition to remove labels from inst[]        
         global label_name 
         label_name = inst[0]
@@ -212,7 +214,7 @@ for s in inst_list:
 j = var_counter
 # loop to store the address of the variables
 for i in variables:  
-    variables[i] = inst_counter - var_counter 
+    variables[i] = inst_counter - j
     j -= 1
 
 inst_counter = 0 

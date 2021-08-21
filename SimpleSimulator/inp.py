@@ -26,6 +26,7 @@ def read_input(file_name):
     for i in range(len(temp_inst)):
         temp_inst[i] = temp_inst[i].strip('\n')
         temp_inst[i] = temp_inst[i].replace('\t',' ')
+
     myfile.close()
     return temp_inst
 
