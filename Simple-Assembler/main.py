@@ -108,6 +108,7 @@ def check_error(inst_counter):
                 else:
                     print("ERROR: Incorrect variable name in line ",inst_counter)
                     return True
+            return False
     if inst[0] in labels: 
         # to check the label syntax
         for i in inst[0]:
