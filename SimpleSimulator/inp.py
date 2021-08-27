@@ -7,7 +7,7 @@ def write_input(file_name):
     if file_name in list_of_files:
         myfile = open(file_name,'w')
         for line in stdin:
-            if line == '':
+            if line == '\n':
                 break
             myfile.write(line) 
         
@@ -15,7 +15,7 @@ def write_input(file_name):
         with open(file_name,'w') as myfile:
             pass
             for line in stdin:
-                    if line == '':
+                    if line == '\n':
                         break
                     myfile.write(line)
         myfile.close()

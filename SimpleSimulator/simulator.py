@@ -14,7 +14,7 @@ MEM = ['0000000000000000']*256
 temp_MEM = inp.read_input('bin_input.txt') 
 for i in range(len(temp_MEM)):
     MEM[i] = temp_MEM[i]
-print(temp_MEM)
+
 PC = 0
 halted = False
 cycle_number = 0
@@ -96,6 +96,8 @@ def EE(instruction):
             RF[int(instruction[5:8],2)] = int(MEM[int(instruction[8:16],2)],2)
         elif op_cod == '00101':
             MEM[int(instruction[8:16],2)] = to_bin(RF[int(instruction[5:8],2)],16)
+        global cycle_number
+        cycle_number += 1
         cycle.append(cycle_number)
         add.append(int(instruction[8:16],2))
         RF[7] = 0
@@ -117,7 +119,6 @@ def EE(instruction):
 while(halted != True):
     instruction = MEM[PC]
     cycle.append(cycle_number)
-    cycle_number += 1
     add.append(PC)
     if instruction[0:5] == '10011':
         halted = True
@@ -127,6 +128,8 @@ while(halted != True):
         print(to_bin(i,16),end=' ')
     print()
     PC = new_PC
+    cycle_number += 1
+
 
 for i in MEM:
     print(i)

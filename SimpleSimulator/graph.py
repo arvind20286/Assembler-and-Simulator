@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 def graph_plot(x, y):
     plt.scatter(x,y)

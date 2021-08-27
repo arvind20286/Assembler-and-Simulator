@@ -119,8 +119,6 @@ def check_error(inst_counter):
                 return True
 
         # condition to remove labels from inst[]        
-        global label_name 
-        label_name = inst[0]
         inst.remove(inst[0])
     
     if len(inst) != 0:
@@ -202,7 +200,7 @@ for s in inst_list:
     # condition to count no. of variables and put the name of variable in variables dic
     if s[0:3] == "var":
         var_counter += 1
-        variables[s[4:]] = var_counter
+        variables[s[4:].strip(' ')] = var_counter
 
     # condition to put name of label and its address in labels dictionary
     if ":" in s:
@@ -233,7 +231,7 @@ for i in inst_list:
     if check_error(inst_counter) == True:
         error += 1
         continue
-
+    
     if(len(inst) != 0 and inst[0] != "var"):
         if inst[0] in typ["A"]:
             if check_reg(inst, 3) == True:
