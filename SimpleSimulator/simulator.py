@@ -1,4 +1,5 @@
 import inp
+import graph
 typ = {"A":["00000","00001","00110","01010","01011","01100"],
         "B":["00010","01000","01001"],
         "C":["00011","00111","01101","01110"],
@@ -13,9 +14,12 @@ MEM = ['0000000000000000']*256
 temp_MEM = inp.read_input('bin_input.txt') 
 for i in range(len(temp_MEM)):
     MEM[i] = temp_MEM[i]
+print(temp_MEM)
 PC = 0
 halted = False
-
+cycle_number = 0
+add = []
+cycle = []
 def to_bin(n,no_of_bits):  # function to covert decimal no. to binary no.
     s = ["0"]*no_of_bits
     while(no_of_bits != 0):
@@ -92,6 +96,8 @@ def EE(instruction):
             RF[int(instruction[5:8],2)] = int(MEM[int(instruction[8:16],2)],2)
         elif op_cod == '00101':
             MEM[int(instruction[8:16],2)] = to_bin(RF[int(instruction[5:8],2)],16)
+        cycle.append(cycle_number)
+        add.append(int(instruction[8:16],2))
         RF[7] = 0
     elif op_cod in typ["E"]:
         if op_cod == '01111':
@@ -108,10 +114,11 @@ def EE(instruction):
         RF[7] = 0
     return PC+1       
 
-            
-    
 while(halted != True):
     instruction = MEM[PC]
+    cycle.append(cycle_number)
+    cycle_number += 1
+    add.append(PC)
     if instruction[0:5] == '10011':
         halted = True
     new_PC = EE(instruction)
@@ -123,3 +130,4 @@ while(halted != True):
 
 for i in MEM:
     print(i)
+graph.graph_plot(cycle, add)
