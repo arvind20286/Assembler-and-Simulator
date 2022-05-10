@@ -1,4 +1,4 @@
-# CO M21 Assignment
+# Simple Assembler and simulator
 Starter repository for Computer Organization, Monsoon 2021 semester, assignment at IIITD
 
 ## Adding code
@@ -7,7 +7,7 @@ Starter repository for Computer Organization, Monsoon 2021 semester, assignment 
 * Make sure that both the assembler and the simulator read from `stdin`.
 * Make sure that both the assembler and the simulator write to `stdout`.
 
-## How to evaluate
+## //////////
 * Go to the `automatedTesting` directory and execute the `run` file with appropiate options passed as arguments.
 * Options available for automated testing:
 	1. `--verbose`: Prints verbose output
